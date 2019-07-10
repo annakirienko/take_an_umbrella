@@ -1,0 +1,14 @@
+<?php
+require_once "vendor/autoload.php";
+$html = file_get_contents("https://api.darksky.net/forecast/fc19d31f3e70e84cc02d1134d3d1d3b1/55.75222,37.61556?lang=ru&units=si"); // строчка с json закодированным
+$weather = json_decode($html,true); // декодируем
+dump($weather);
+$temperature = round($weather["daily"]["data"][0]["temperatureLow"])."-".round($weather["daily"]["data"][0]["temperatureHigh"]);
+if (@$weather["daily"]["data"][0]["precipType"] == "rain") {
+    $str = "Возьми зонтик.";
+
+} else {
+    $str = $weather["daily"]["data"][0]["summary"];
+}
+    $text = urlencode("Температура воздуха: ".$temperature.". ".$str);
+file_get_contents("https://sms.ru/sms/send?api_id=E12C6E8D-D144-DC45-1D68-6E526D771981&to=79690367533&msg=".$text."&json=1");
